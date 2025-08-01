@@ -436,7 +436,7 @@ GameObject:
   - component: {fileID: 664220282}
   - component: {fileID: 664220281}
   m_Layer: 0
-  m_Name: Cube
+  m_Name: First Level Scale
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -788,7 +788,7 @@ GameObject:
   - component: {fileID: 776111263}
   - component: {fileID: 776111262}
   m_Layer: 0
-  m_Name: Cube (1)
+  m_Name: Second Level Scale
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
