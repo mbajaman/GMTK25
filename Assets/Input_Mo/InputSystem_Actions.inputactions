@@ -96,6 +96,7 @@
                     "interactions": "",
                     "initialStateCheck": false
                 },
+                {
                     "name": "Rewind",
                     "type": "Button",
                     "id": "8f7c8b2a-1e4d-4f5a-9b3c-7d8e9f0a1b2c",
@@ -501,6 +502,9 @@
                     "action": "Slam",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "9f7c8b2a-1e4d-4f5a-9b3c-7d8e9f0a1b2c",
                     "path": "<Keyboard>/i",
                     "interactions": "",
