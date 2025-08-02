@@ -24,8 +24,15 @@ public class ObjectGrabable : MonoBehaviour
 
     {
         this.objectGrabPointTransform = null;
+        objectRigibody.isKinematic = false; 
         objectRigibody.useGravity = true;
 
+
+    }
+
+    public void Pickup()
+    {
+        objectRigibody.isKinematic = true;
 
     }
     private void FixedUpdate()
