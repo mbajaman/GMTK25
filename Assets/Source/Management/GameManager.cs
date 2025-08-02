@@ -42,8 +42,7 @@ public class GameManager : MonoBehaviour
     // RewindableObjects management
     private RewindableObject[] rewindableObjects;
     
-    // Input management
-    private InputManager inputManager;
+
     
     // Singleton pattern
     public static GameManager Instance { get; private set; }
@@ -73,9 +72,6 @@ public class GameManager : MonoBehaviour
         // Find all RewindableObjects in the scene
         rewindableObjects = FindObjectsByType<RewindableObject>(FindObjectsSortMode.None);
         
-        // Find InputManager
-        inputManager = FindAnyObjectByType<InputManager>();
-
         // Find SmoothPlayerRewind
         smoothPlayerRewind = FindAnyObjectByType<SmoothPlayerRewind>();
         
@@ -115,11 +111,7 @@ public class GameManager : MonoBehaviour
         // Refresh RewindableObjects list
         rewindableObjects = FindObjectsByType<RewindableObject>(FindObjectsSortMode.None);
         
-        // Ensure input is enabled when level starts
-        if (inputManager != null)
-        {
-            inputManager.EnableInput();
-        }
+
         
         OnLevelChanged?.Invoke(CurrentLevel);
         OnLevelStart?.Invoke();
@@ -208,11 +200,7 @@ public class GameManager : MonoBehaviour
         
         Debug.Log("Starting rewind process...");
         
-        // Disable player input during rewind
-        if (inputManager != null)
-        {
-            inputManager.DisableInput();
-        }
+
         
         // Start rewind for all RewindableObjects
         StartRewindableObjects();
@@ -251,11 +239,7 @@ public class GameManager : MonoBehaviour
         
         Debug.Log("Rewind complete! Restarting level...");
         
-        // Re-enable player input after rewind
-        if (inputManager != null)
-        {
-            inputManager.EnableInput();
-        }
+
         
         // Restart the level
         StartLevel(CurrentLevel);
