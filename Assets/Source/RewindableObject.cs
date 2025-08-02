@@ -3,42 +3,27 @@ using System.Collections.Generic;
 
 public class RewindableObject : MonoBehaviour
 {
+    [Header("Rewind Settings")]
     public float rewindDuration = 60f;
     public int fps = 60;
 
     private List<TimeState> history = new List<TimeState>();
     private bool isRewinding = false;
     private int maxFrames;
-    private InputManager inputManager;
+    private GameManager gameManager;
 
     void Start()
     {
         maxFrames = Mathf.RoundToInt(rewindDuration * fps);
         
-        // Find the InputManager in the scene
-        inputManager = FindAnyObjectByType<InputManager>();
+        // Find the GameManager in the scene
+        gameManager = GameManager.Instance;
         
-        // Subscribe to input events
-        if (inputManager != null)
+        // Subscribe to GameManager events
+        if (gameManager != null)
         {
-            inputManager.OnRewindPressed += StartRewind;
-            inputManager.OnRewindReleased += StopRewind;
-        }
-    }
-
-    void Update()
-    {
-        // Legacy input fallback if InputManager is not found
-        if (inputManager == null)
-        {
-            if (Input.GetKeyDown(KeyCode.I))
-            {
-                StartRewind();
-            }
-            if (Input.GetKeyUp(KeyCode.I))
-            {
-                StopRewind();
-            }
+            gameManager.OnRewindStart.AddListener(StartRewind);
+            gameManager.OnRewindComplete.AddListener(StopRewind);
         }
     }
 
@@ -67,20 +52,22 @@ public class RewindableObject : MonoBehaviour
     public void StartRewind()
     {
         isRewinding = true;
+        Debug.Log($"RewindableObject {gameObject.name} started rewinding");
     }
 
     public void StopRewind()
     {
         isRewinding = false;
+        Debug.Log($"RewindableObject {gameObject.name} stopped rewinding");
     }
     
     void OnDestroy()
     {
         // Unsubscribe from events to prevent memory leaks
-        if (inputManager != null)
+        if (gameManager != null)
         {
-            inputManager.OnRewindPressed -= StartRewind;
-            inputManager.OnRewindReleased -= StopRewind;
+            gameManager.OnRewindStart.RemoveListener(StartRewind);
+            gameManager.OnRewindComplete.RemoveListener(StopRewind);
         }
     }
 }
