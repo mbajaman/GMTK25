@@ -104,6 +104,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "TimeScale",
+                    "type": "Button",
+                    "id": "0d36c995-a661-49af-9dc7-f84f623ef72c",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -506,7 +515,7 @@
                 {
                     "name": "",
                     "id": "9f7c8b2a-1e4d-4f5a-9b3c-7d8e9f0a1b2c",
-                    "path": "<Keyboard>/i",
+                    "path": "<Keyboard>/r",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard&Mouse",
@@ -516,12 +525,12 @@
                 },
                 {
                     "name": "",
-                    "id": "8f7c8b2a-1e4d-4f5a-9b3c-7d8e9f0a1b2d",
-                    "path": "<Gamepad>/buttonWest",
+                    "id": "1c44c422-27f0-4e8e-ae02-634861e77657",
+                    "path": "<Keyboard>/t",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Gamepad",
-                    "action": "Rewind",
+                    "groups": "",
+                    "action": "TimeScale",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
