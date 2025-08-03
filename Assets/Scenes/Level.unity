@@ -905,7 +905,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: 065bdb1580b8fb9468ec2e70c95e8c40, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.75
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -1260,6 +1260,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 5393215578589016655, guid: c5efc39a8aaf6e64ea40e9ad573e9b47, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 2981265e71ccec44e9c9c81d4fc480c8, type: 2}
     - target: {fileID: 6631786926621376694, guid: c5efc39a8aaf6e64ea40e9ad573e9b47, type: 3}
       propertyPath: _mainCamera
       value: 
