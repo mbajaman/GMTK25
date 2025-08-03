@@ -14,6 +14,7 @@ public class ObjectGrabable : MonoBehaviour
     {
        objectRigibody = GetComponent<Rigidbody>();
     }
+    
     public void Grab(Transform objectGrabPointTransform)
     {
         this.objectGrabPointTransform = objectGrabPointTransform;
@@ -21,20 +22,17 @@ public class ObjectGrabable : MonoBehaviour
     }
 
     public void Drop()
-
     {
         this.objectGrabPointTransform = null;
         objectRigibody.isKinematic = false; 
         objectRigibody.useGravity = true;
-
-
     }
 
     public void Pickup()
     {
         objectRigibody.isKinematic = true;
-
     }
+    
     private void FixedUpdate()
     {
         if (objectGrabPointTransform != null)

@@ -146,7 +146,7 @@ public class GameManager : MonoBehaviour
         GameObject rewindPoint = rewindPoints[CurrentLevel - 1];
         playerStartPosition = rewindPoint.transform.position;
 
-        if (CurrentLevel >= maxLevels)
+        if (CurrentLevel > maxLevels)
         {
             CompleteGame();
         }

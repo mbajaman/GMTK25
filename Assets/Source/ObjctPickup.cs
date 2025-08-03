@@ -21,13 +21,11 @@ public class ObjctPickup : MonoBehaviour
                 //Not Carrying an object, try to grab
                 float pickUpDistance = 2f;
                 Physics.Raycast(playerCameraTransform.position, playerCameraTransform.forward, out RaycastHit raycastHit, pickUpDistance);
-                if (raycastHit.transform.TryGetComponent(out objectGrabable))
+                if (raycastHit.transform != null && raycastHit.transform.TryGetComponent(out objectGrabable))
                 {
                     objectGrabable.Grab(objectGrabPointTransform);
                     objectGrabable.Pickup();
-
                     Debug.Log(objectGrabable);
-
                 }
             }
             else
