@@ -2,6 +2,7 @@
   "dependencies": {
     "app.rive.rive-unity": "https://github.com/rive-app/rive-unity.git?path=package#v0.3.7",
     "com.boxqkrtm.ide.cursor": "https://github.com/boxqkrtm/com.unity.ide.cursor.git",
+    "com.siccity.gltfutility": "https://github.com/siccity/gltfutility.git",
     "com.unity.ai.navigation": "2.0.8",
     "com.unity.burst": "1.8.23",
     "com.unity.cinemachine": "3.1.4",
