@@ -6,8 +6,8 @@ public class GameManager : MonoBehaviour
 {
     [Header("Game Settings")]
     [SerializeField] private int maxLevels = 3;
-    [SerializeField] private float levelTimeLimit = 5f; // Changed to 5 seconds for testing
-    [SerializeField] private float rewindDuration = 10f;
+    [SerializeField] private float levelTimeLimit = 60f; // Changed to 5 seconds for testing
+    [SerializeField] public float rewindDuration = 10f;
     
     [Header("Events")]
     public UnityEvent OnLevelStart;
@@ -31,13 +31,6 @@ public class GameManager : MonoBehaviour
     
     // Private variables
     private Coroutine rewindCoroutine;
-    private Vector3[] rewindPositions;
-    private Quaternion[] rewindRotations;
-    private float[] rewindTimeStamps;
-    private int rewindIndex = 0;
-    //TODO: Fix for 60 seconds
-    private const int MAX_REWIND_SNAPSHOTS = 300; // 60 seconds * 60 snapshots per second
-    private SmoothPlayerRewind smoothPlayerRewind;
     
     // RewindableObjects management
     private RewindableObject[] rewindableObjects;
@@ -60,20 +53,15 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-        
-        // Initialize rewind arrays
-        rewindPositions = new Vector3[MAX_REWIND_SNAPSHOTS];
-        rewindRotations = new Quaternion[MAX_REWIND_SNAPSHOTS];
-        rewindTimeStamps = new float[MAX_REWIND_SNAPSHOTS];
     }
     
     void Start()
     {
+        // Cap frame rate to 60 FPS
+        Application.targetFrameRate = 60;
+
         // Find all RewindableObjects in the scene
         rewindableObjects = FindObjectsByType<RewindableObject>(FindObjectsSortMode.None);
-        
-        // Find SmoothPlayerRewind
-        smoothPlayerRewind = FindAnyObjectByType<SmoothPlayerRewind>();
         
         StartLevel(1);
     }
@@ -83,7 +71,6 @@ public class GameManager : MonoBehaviour
         if (IsGameActive && !IsRewinding)
         {
             UpdateTimer();
-            RecordRewindSnapshot();
         }
         
         if (showDebugInfo)
@@ -105,13 +92,10 @@ public class GameManager : MonoBehaviour
         IsGameActive = true;
         IsRewinding = false;
         
-        // Reset rewind system
-        rewindIndex = 0;
-        
         // Refresh RewindableObjects list
         rewindableObjects = FindObjectsByType<RewindableObject>(FindObjectsSortMode.None);
-        
 
+        Debug.Log($"RewindableObjects found: {rewindableObjects.Length}");
         
         OnLevelChanged?.Invoke(CurrentLevel);
         OnLevelStart?.Invoke();
@@ -121,39 +105,39 @@ public class GameManager : MonoBehaviour
     
     public void CompleteLevel()
     {
-        if (!IsGameActive || IsRewinding)
-            return;
+        //TODO: Implement successful level completion
+        // if (!IsGameActive || IsRewinding)
+        //     return;
             
-        IsGameActive = false;
-        OnLevelComplete?.Invoke();
+        // IsGameActive = false;
+        // OnLevelComplete?.Invoke();
         
-        Debug.Log($"Level {CurrentLevel} completed!");
+        // Debug.Log($"Level {CurrentLevel} completed!");
         
-        if (CurrentLevel >= maxLevels)
-        {
-            CompleteGame();
-        }
-        else
-        {
-            // Start next level after a short delay
-            StartCoroutine(StartNextLevelAfterDelay(2f));
-        }
-    }
-    
-    private IEnumerator StartNextLevelAfterDelay(float delay)
-    {
-        yield return new WaitForSeconds(delay);
-        StartLevel(CurrentLevel + 1);
+        // if (CurrentLevel >= maxLevels)
+        // {
+        //     CompleteGame();
+        // }
     }
     
     private void UpdateTimer()
     {
-        TimeRemaining -= Time.deltaTime;
-        OnTimerUpdate?.Invoke(TimeRemaining);
-        
-        if (TimeRemaining <= 0)
+        if (IsRewinding)
         {
-            TimeUp();
+            // During rewind, increment the timer based on rewind duration and time scale
+            TimeRemaining += Time.deltaTime * Time.timeScale;
+            OnTimerUpdate?.Invoke(TimeRemaining);
+        }
+        else if (IsGameActive)
+        {
+            // During normal gameplay, decrement the timer
+            TimeRemaining -= Time.deltaTime;
+            OnTimerUpdate?.Invoke(TimeRemaining);
+            
+            if (TimeRemaining <= 0)
+            {
+                TimeUp();
+            }
         }
     }
     
@@ -172,122 +156,25 @@ public class GameManager : MonoBehaviour
         rewindCoroutine = StartCoroutine(RewindToStart());
     }
     
-    private void RecordRewindSnapshot()
-    {
-        if (rewindIndex >= MAX_REWIND_SNAPSHOTS)
-        {
-            // Shift array to make room for new snapshot
-            for (int i = 0; i < MAX_REWIND_SNAPSHOTS - 1; i++)
-            {
-                rewindPositions[i] = rewindPositions[i + 1];
-                rewindRotations[i] = rewindRotations[i + 1];
-                rewindTimeStamps[i] = rewindTimeStamps[i + 1];
-            }
-            rewindIndex = MAX_REWIND_SNAPSHOTS - 1;
-        }
-        
-        // Record current state
-        rewindPositions[rewindIndex] = GetPlayerPosition();
-        rewindRotations[rewindIndex] = GetPlayerRotation();
-        rewindTimeStamps[rewindIndex] = Time.time;
-        rewindIndex++;
-    }
-    
-   private IEnumerator RewindToStart()
+       private IEnumerator RewindToStart()
     {
         IsRewinding = true;
         OnRewindStart?.Invoke();
         
         Debug.Log("Starting rewind process...");
         
-
-        
-        // Start rewind for all RewindableObjects
-        StartRewindableObjects();
-        
-        // Calculate how many snapshots to rewind through
-        int snapshotsToRewind = Mathf.Min(rewindIndex, (int)(rewindDuration * 10));
-        float timePerSnapshot = rewindDuration / snapshotsToRewind;
-        
-        // Smooth rewind through snapshots
-        for (int i = snapshotsToRewind - 1; i >= 0; i--)
-        {
-            if (i < rewindIndex && smoothPlayerRewind != null)
-            {
-                smoothPlayerRewind.StartSmoothRewind(
-                    rewindPositions[i], 
-                    rewindRotations[i], 
-                    timePerSnapshot
-                );
-                
-                // Wait for this rewind step to complete
-                while (smoothPlayerRewind.IsRewinding())
-                {
-                    yield return null;
-                }
-            }
-        }
-        
-        // Stop rewind for all RewindableObjects
-        StopRewindableObjects();
-        
-        // Reset to level start
-        ResetLevelToStart();
+        // Wait for the rewind duration (RewindableObjects will handle their own timing)
+        yield return new WaitForSeconds(rewindDuration);
         
         IsRewinding = false;
         OnRewindComplete?.Invoke();
         
         Debug.Log("Rewind complete! Restarting level...");
         
-
-        
         // Restart the level
         StartLevel(CurrentLevel);
     }
     
-    private void StartRewindableObjects()
-    {
-        if (rewindableObjects != null)
-        {
-            foreach (RewindableObject rewindableObj in rewindableObjects)
-            {
-                if (rewindableObj != null)
-                {
-                    rewindableObj.StartRewind();
-                }
-            }
-        }
-    }
-    
-    private void StopRewindableObjects()
-    {
-        if (rewindableObjects != null)
-        {
-            foreach (RewindableObject rewindableObj in rewindableObjects)
-            {
-                if (rewindableObj != null)
-                {
-                    rewindableObj.StopRewind();
-                }
-            }
-        }
-    }
-    
-    private void ResetLevelToStart()
-    {
-        //TODO: Implement this
-        // This method should reset all level elements to their starting positions
-        // You'll need to implement this based on your specific level mechanics
-        
-        // Reset player position if needed
-        // TODO: Turning this off for now.
-        // Transform player = GetPlayerTransform();
-        // if (player != null)
-        // {
-        //     player.position = GetLevelStartPosition();
-        //     player.rotation = GetLevelStartRotation();
-        // }
-    }
     
     private void CompleteGame()
     {
@@ -297,55 +184,12 @@ public class GameManager : MonoBehaviour
         
         Debug.Log("Congratulations! You've completed all levels!");
     }
-    
-    // Helper methods for getting/setting player transform
-    private Vector3 GetPlayerPosition()
-    {
-        Transform player = GetPlayerTransform();
-        return player != null ? player.position : Vector3.zero;
-    }
-    
-    private Quaternion GetPlayerRotation()
-    {
-        Transform player = GetPlayerTransform();
-        return player != null ? player.rotation : Quaternion.identity;
-    }
-    
-    private void SetPlayerTransform(Vector3 position, Quaternion rotation)
-    {
-        Transform player = GetPlayerTransform();
-        if (player != null)
-        {
-            player.position = position;
-            player.rotation = rotation;
-        }
-    }
-    
-    private Transform GetPlayerTransform()
-    {
-        // You may need to adjust this based on your player setup
-        GameObject player = GameObject.FindGameObjectWithTag("Player");
-        return player != null ? player.transform : null;
-    }
-    
-    private Vector3 GetLevelStartPosition()
-    {
-        // Return the starting position for the current level
-        // You'll need to implement this based on your level design
-        return Vector3.zero;
-    }
-    
-    private Quaternion GetLevelStartRotation()
-    {
-        // Return the starting rotation for the current level
-        return Quaternion.identity;
-    }
-    
+
     private void DisplayDebugInfo()
     {
         if (IsGameActive)
         {
-            Debug.Log($"Level: {CurrentLevel} | Time: {TimeRemaining:F1}s | Rewind Snapshots: {rewindIndex}");
+            Debug.Log($"Level: {CurrentLevel} | Time: {TimeRemaining:F1}s");
         }
     }
     
