@@ -5,7 +5,7 @@ public class MainMenu : MonoBehaviour
 {
     public void PlayGame()
     {
-        SceneManager.LoadScene("Clock Blockout");
+        SceneManager.LoadScene("Level");
     }
 
     public void MainMenuBtn()
