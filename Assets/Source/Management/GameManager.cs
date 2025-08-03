@@ -143,9 +143,12 @@ public class GameManager : MonoBehaviour
         
         Debug.Log($"Level {CurrentLevel} completed!");
 
-        // Get the rewind point for the current level
-        GameObject rewindPoint = rewindPoints[CurrentLevel - 1];
-        playerStartPosition = rewindPoint.transform.position;
+        if (CurrentLevel <= maxLevels)
+        {
+            // Get the rewind point for the current level
+            GameObject rewindPoint = rewindPoints[CurrentLevel - 1];
+            playerStartPosition = rewindPoint.transform.position;
+        }
 
         if (CurrentLevel > maxLevels)
         {
@@ -243,6 +246,8 @@ public class GameManager : MonoBehaviour
         IsGameComplete = true;
         IsGameActive = false;
         SceneManager.LoadScene("EndMenu");
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
         Debug.Log("Congratulations! You've completed all levels!");
     }
 
