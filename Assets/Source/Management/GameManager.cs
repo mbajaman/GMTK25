@@ -34,7 +34,6 @@ public class GameManager : MonoBehaviour
     // Private variables
     private Coroutine rewindCoroutine;
     private Vector3 playerStartPosition;
-    private Quaternion playerStartRotation;
     
     // RewindableObjects management
     private RewindableObject[] rewindableObjects;
@@ -72,7 +71,6 @@ public class GameManager : MonoBehaviour
 
         // Record the Player's position and rotation
         playerStartPosition = rewindPoints[0].transform.position;
-        playerStartRotation = rewindPoints[0].transform.rotation;
 
         StartLevel(1);
     }
@@ -138,6 +136,7 @@ public class GameManager : MonoBehaviour
 
     public void CompleteLevel()
     {
+        CurrentLevel++;
         if (!IsGameActive || IsRewinding)
             return;
         
@@ -146,8 +145,7 @@ public class GameManager : MonoBehaviour
         // Get the rewind point for the current level
         GameObject rewindPoint = rewindPoints[CurrentLevel - 1];
         playerStartPosition = rewindPoint.transform.position;
-        playerStartRotation = rewindPoint.transform.rotation;
-        
+
         if (CurrentLevel >= maxLevels)
         {
             CompleteGame();
@@ -155,9 +153,8 @@ public class GameManager : MonoBehaviour
 
         if (CurrentLevel < maxLevels)
         {
-            StartLevel(CurrentLevel + 1);
+            StartLevel(CurrentLevel);
         }
-
     }
     
     private void TimeUp()
@@ -173,6 +170,7 @@ public class GameManager : MonoBehaviour
             StopCoroutine(rewindCoroutine);
         }
         rewindCoroutine = StartCoroutine(RewindToStart());
+
         player.GetComponent<SmoothPlayerRewind>().StartSmoothRewind(playerStartPosition, rewindDuration);
     }
     
@@ -215,10 +213,10 @@ public class GameManager : MonoBehaviour
             Debug.LogWarning($"Rewind timeout reached after {timeoutDuration}s. Only {completedRewinds}/{totalRewindableObjects} objects completed.");
         }
 
-        // Move the player to the start position
-        while (player.transform.position != playerStartPosition)
+        // Move the player to the start position within a radius of 0.1f
+        while (Vector3.Distance(player.transform.position, playerStartPosition) > 0.1f)
         {
-            elapsedTime += Time.unscaledDeltaTime;
+            player.transform.position = Vector3.MoveTowards(player.transform.position, playerStartPosition, Time.unscaledDeltaTime * 10f);
             yield return null;
         }
         
