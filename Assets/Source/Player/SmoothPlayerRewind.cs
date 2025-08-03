@@ -11,27 +11,20 @@ public class SmoothPlayerRewind : MonoBehaviour
     
     void Start()
     {
-        SetupPlayerComponents();
-    }
-    
-    private void SetupPlayerComponents()
-    {
         playerTransform = transform;
         characterController = GetComponent<CharacterController>();
-        
-        // Find all movement-related scripts to disable during rewind
         movementScripts = GetComponents<MonoBehaviour>();
     }
     
-    public void StartSmoothRewind(Vector3 targetPosition, Quaternion targetRotation, float duration)
+    public void StartSmoothRewind(Vector3 targetPosition, float duration)
     {
         if (!isRewinding)
         {
-            StartCoroutine(SmoothRewindCoroutine(targetPosition, targetRotation, duration));
+            StartCoroutine(SmoothRewindCoroutine(targetPosition, duration));
         }
     }
     
-    private IEnumerator SmoothRewindCoroutine(Vector3 targetPosition, Quaternion targetRotation, float duration)
+    private IEnumerator SmoothRewindCoroutine(Vector3 targetPosition, float duration)
     {
         isRewinding = true;
         
@@ -39,7 +32,6 @@ public class SmoothPlayerRewind : MonoBehaviour
         DisablePlayerComponents();
         
         Vector3 startPosition = playerTransform.position;
-        Quaternion startRotation = playerTransform.rotation;
         float elapsed = 0f;
         
         Debug.Log($"Starting smooth rewind from {startPosition} to {targetPosition}");
@@ -55,9 +47,6 @@ public class SmoothPlayerRewind : MonoBehaviour
             // Interpolate position
             Vector3 newPosition = Vector3.Lerp(startPosition, targetPosition, smoothT);
             
-            // Interpolate rotation
-            Quaternion newRotation = Quaternion.Lerp(startRotation, targetRotation, smoothT);
-            
             // Apply position and rotation
             if (characterController != null)
             {
@@ -69,8 +58,6 @@ public class SmoothPlayerRewind : MonoBehaviour
             {
                 playerTransform.position = newPosition;
             }
-            
-            playerTransform.rotation = newRotation;
             
             yield return null;
         }
@@ -85,7 +72,6 @@ public class SmoothPlayerRewind : MonoBehaviour
         {
             playerTransform.position = targetPosition;
         }
-        playerTransform.rotation = targetRotation;
         
         // Re-enable player components
         EnablePlayerComponents();
@@ -96,10 +82,6 @@ public class SmoothPlayerRewind : MonoBehaviour
     
     private void DisablePlayerComponents()
     {
-        // if (characterController != null)
-        // {
-        //     characterController.enabled = false;
-        // }
         
         if (movementScripts != null)
         {

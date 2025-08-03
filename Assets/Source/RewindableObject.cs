@@ -9,12 +9,15 @@ public class RewindableObject : MonoBehaviour
     [SerializeField] private float rewindTimeScale = 3f; // Speed up rewind by 3x
 
     private List<TimeState> history = new List<TimeState>();
-    private bool isRewinding = false;
+
     private GameManager gameManager;
     private Coroutine rewindCoroutine;
+
+    private BoxCollider bc;
+    private Rigidbody rb = new Rigidbody();
+    
     private float originalTimeScale;
-    private BoxCollider boxCollider;
-    private Rigidbody rigidbody = new Rigidbody();
+    private bool isRewinding = false;
     private bool hasNotifiedCompletion = false;
 
     void Start()
@@ -29,8 +32,8 @@ public class RewindableObject : MonoBehaviour
             gameManager.OnRewindComplete.AddListener(StopRewind);
         }
 
-        boxCollider = GetComponent<BoxCollider>();
-        rigidbody = GetComponent<Rigidbody>();
+        bc = GetComponent<BoxCollider>();
+        rb = GetComponent<Rigidbody>();
     }
 
     void FixedUpdate()
@@ -43,8 +46,6 @@ public class RewindableObject : MonoBehaviour
                 Debug.Log($"Removing history at index 0");
                 history.RemoveAt(0);
             }
-
-            Debug.Log($"Adding history at index {history.Count} | Position: {transform.position} | Rotation: {transform.rotation}");
             history.Add(new TimeState(transform.position, transform.rotation));
         }
     }
@@ -55,9 +56,9 @@ public class RewindableObject : MonoBehaviour
 
         isRewinding = true;
         hasNotifiedCompletion = false;
-        boxCollider.enabled = false;
-        rigidbody.useGravity = false;
-        rigidbody.isKinematic = true;
+        bc.enabled = false;
+        rb.useGravity = false;
+        rb.isKinematic = true;
 
         if (rewindCoroutine != null)
         {
@@ -82,15 +83,13 @@ public class RewindableObject : MonoBehaviour
 
         // Clear history after rewind
         history.Clear();
-        boxCollider.enabled = true;
-        rigidbody.useGravity = true;
-        rigidbody.isKinematic = false;
+        bc.enabled = true;
+        rb.useGravity = true;
+        rb.isKinematic = false;
     }
 
     private IEnumerator RewindCoroutine()
     {
-        Debug.Log($"History count: {history.Count}");
-
         if (history.Count == 0)
         {
             Debug.LogWarning($"RewindableObject {gameObject.name} has no history to rewind");
@@ -109,12 +108,12 @@ public class RewindableObject : MonoBehaviour
         
         // Calculate how many history frames to process
         int totalFrames = history.Count;
-        Debug.Log($"Total Frames: {totalFrames}");
 
         // Process frames in reverse order
         for (int i = totalFrames - 1; i >= 0; i--)
         {
-            Debug.Log($"Processing frame {i}");
+            // DEV ONLY
+            // Debug.Log($"Processing frame {i}");
                         
             TimeState state = history[i];
             transform.position = state.position;

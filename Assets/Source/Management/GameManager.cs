@@ -8,14 +8,13 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int maxLevels = 3;
     [SerializeField] private float levelTimeLimit = 60f; // Changed to 5 seconds for testing
     [SerializeField] public float rewindDuration = 10f;
+    [SerializeField] public GameObject player;
     
     [Header("Events")]
     public UnityEvent OnLevelStart;
-    public UnityEvent OnLevelComplete;
     public UnityEvent OnTimeUp;
     public UnityEvent OnRewindStart;
     public UnityEvent OnRewindComplete;
-    public UnityEvent OnGameComplete;
     public UnityEvent<float> OnTimerUpdate;
     public UnityEvent<int> OnLevelChanged;
     
@@ -31,6 +30,8 @@ public class GameManager : MonoBehaviour
     
     // Private variables
     private Coroutine rewindCoroutine;
+    private Vector3 playerStartPosition;
+    private Quaternion playerStartRotation;
     
     // RewindableObjects management
     private RewindableObject[] rewindableObjects;
@@ -64,7 +65,14 @@ public class GameManager : MonoBehaviour
 
         // Find all RewindableObjects in the scene
         rewindableObjects = FindObjectsByType<RewindableObject>(FindObjectsSortMode.None);
-        
+
+        // Find the player
+        player = GameObject.FindGameObjectWithTag("Player");
+
+        // Record the Player's position and rotation
+        playerStartPosition = player.transform.position;
+        playerStartRotation = player.transform.rotation;
+
         StartLevel(1);
     }
     
@@ -105,24 +113,7 @@ public class GameManager : MonoBehaviour
         Debug.Log($"Level {CurrentLevel} started. Time remaining: {TimeRemaining:F1} seconds");
     }
     
-    public void CompleteLevel()
-    {
-        //TODO: Implement successful level completion
-        // if (!IsGameActive || IsRewinding)
-        //     return;
-            
-        // IsGameActive = false;
-        // OnLevelComplete?.Invoke();
-        
-        // Debug.Log($"Level {CurrentLevel} completed!");
-        
-        // if (CurrentLevel >= maxLevels)
-        // {
-        //     CompleteGame();
-        // }
-    }
-    
-    private void UpdateTimer()
+ private void UpdateTimer()
     {
         if (IsRewinding)
         {
@@ -142,6 +133,25 @@ public class GameManager : MonoBehaviour
             }
         }
     }
+
+    public void CompleteLevel()
+    {
+        if (!IsGameActive || IsRewinding)
+            return;
+            
+        IsGameActive = false;
+        
+        Debug.Log($"Level {CurrentLevel} completed!");
+
+        // Update with new player start position and rotation
+        playerStartPosition = player.transform.position;
+        playerStartRotation = player.transform.rotation;
+        
+        if (CurrentLevel >= maxLevels)
+        {
+            CompleteGame();
+        }
+    }
     
     private void TimeUp()
     {
@@ -156,6 +166,7 @@ public class GameManager : MonoBehaviour
             StopCoroutine(rewindCoroutine);
         }
         rewindCoroutine = StartCoroutine(RewindToStart());
+        player.GetComponent<SmoothPlayerRewind>().StartSmoothRewind(playerStartPosition, rewindDuration);
     }
     
     private IEnumerator RewindToStart()
@@ -218,8 +229,6 @@ public class GameManager : MonoBehaviour
     {
         IsGameComplete = true;
         IsGameActive = false;
-        OnGameComplete?.Invoke();
-        
         Debug.Log("Congratulations! You've completed all levels!");
     }
 

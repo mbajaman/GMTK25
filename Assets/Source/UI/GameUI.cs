@@ -27,10 +27,10 @@ public class GameUI : MonoBehaviour
         {
             // Subscribe to events
             gameManager.OnTimerUpdate.AddListener(UpdateTimerDisplay);
+            gameManager.OnLevelStart.AddListener(OnLevelStart);
             gameManager.OnLevelChanged.AddListener(UpdateLevelDisplay);
             gameManager.OnRewindStart.AddListener(ShowRewindIndicator);
             gameManager.OnRewindComplete.AddListener(HideRewindIndicator);
-            gameManager.OnLevelStart.AddListener(OnLevelStart);
             
             // Initialize display
             UpdateLevelDisplay(gameManager.CurrentLevel);
@@ -48,10 +48,11 @@ public class GameUI : MonoBehaviour
         {
             // Unsubscribe from events
             gameManager.OnTimerUpdate.RemoveListener(UpdateTimerDisplay);
+            gameManager.OnLevelStart.RemoveListener(OnLevelStart);
             gameManager.OnLevelChanged.RemoveListener(UpdateLevelDisplay);
             gameManager.OnRewindStart.RemoveListener(ShowRewindIndicator);
             gameManager.OnRewindComplete.RemoveListener(HideRewindIndicator);
-            gameManager.OnLevelStart.RemoveListener(OnLevelStart);
+
         }
     }
     
@@ -86,6 +87,13 @@ public class GameUI : MonoBehaviour
         }
     }
     
+    private void OnLevelStart()
+    {
+        // Reset timer display
+        UpdateTimerDisplay(gameManager.TimeRemaining);
+        HideRewindIndicator();
+    }
+    
     private void UpdateLevelDisplay(int level)
     {
         if (levelText != null)
@@ -110,10 +118,5 @@ public class GameUI : MonoBehaviour
         }
     }
     
-    private void OnLevelStart()
-    {
-        // Reset timer display
-        UpdateTimerDisplay(gameManager.TimeRemaining);
-        HideRewindIndicator();
-    }
+
 } 
