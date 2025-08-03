@@ -6,7 +6,7 @@ public class RewindableObject : MonoBehaviour
 {
     [Header("Rewind Settings")]
     [SerializeField] private int maxHistoryFrames = 3600; // 60 seconds at 60fps
-    [SerializeField] private float rewindTimeScale = 3f; // Speed up rewind by 3x
+    // [SerializeField] private float rewindTimeScale = 3f; // Speed up rewind by 3x
 
     private List<TimeState> history = new List<TimeState>();
 
@@ -16,7 +16,7 @@ public class RewindableObject : MonoBehaviour
     private BoxCollider bc;
     private Rigidbody rb = new Rigidbody();
     
-    private float originalTimeScale;
+    // private float originalTimeScale;
     private bool isRewinding = false;
     private bool hasNotifiedCompletion = false;
 
@@ -79,7 +79,7 @@ public class RewindableObject : MonoBehaviour
         }
         
         // Restore original time scale
-        Time.timeScale = originalTimeScale;
+        // Time.timeScale = originalTimeScale;
 
         // Clear history after rewind
         history.Clear();
@@ -103,8 +103,8 @@ public class RewindableObject : MonoBehaviour
         }
 
         // Store original time scale and speed up rewind
-        originalTimeScale = Time.timeScale;
-        Time.timeScale = rewindTimeScale;
+        // originalTimeScale = Time.timeScale;
+        // Time.timeScale = rewindTimeScale;
         
         // Calculate how many history frames to process
         int totalFrames = history.Count;

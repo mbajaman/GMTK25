@@ -1,12 +1,15 @@
 using UnityEngine;
-using System.Collections;
 using UnityEngine.Events;
+using System.Collections;
+using System.Collections.Generic;
 
 public class GameManager : MonoBehaviour
 {
     [Header("Game Settings")]
     [SerializeField] private int maxLevels = 3;
     [SerializeField] private float levelTimeLimit = 60f; // Changed to 5 seconds for testing
+    [SerializeField] private List<GameObject> rewindPoints = new List<GameObject>();
+
     [SerializeField] public float rewindDuration = 10f;
     [SerializeField] public GameObject player;
     
@@ -38,8 +41,6 @@ public class GameManager : MonoBehaviour
     private int completedRewinds = 0;
     private int totalRewindableObjects = 0;
     
-
-    
     // Singleton pattern
     public static GameManager Instance { get; private set; }
     
@@ -70,8 +71,8 @@ public class GameManager : MonoBehaviour
         player = GameObject.FindGameObjectWithTag("Player");
 
         // Record the Player's position and rotation
-        playerStartPosition = player.transform.position;
-        playerStartRotation = player.transform.rotation;
+        playerStartPosition = rewindPoints[0].transform.position;
+        playerStartRotation = rewindPoints[0].transform.rotation;
 
         StartLevel(1);
     }
@@ -101,6 +102,7 @@ public class GameManager : MonoBehaviour
         TimeRemaining = levelTimeLimit;
         IsGameActive = true;
         IsRewinding = false;
+        Time.timeScale = 1f;
         
         // Refresh RewindableObjects list
         rewindableObjects = FindObjectsByType<RewindableObject>(FindObjectsSortMode.None);
@@ -143,9 +145,10 @@ public class GameManager : MonoBehaviour
         
         Debug.Log($"Level {CurrentLevel} completed!");
 
-        // Update with new player start position and rotation
-        playerStartPosition = player.transform.position;
-        playerStartRotation = player.transform.rotation;
+        // Get the rewind point for the current level
+        GameObject rewindPoint = rewindPoints[CurrentLevel - 1];
+        playerStartPosition = rewindPoint.transform.position;
+        playerStartRotation = rewindPoint.transform.rotation;
         
         if (CurrentLevel >= maxLevels)
         {
@@ -200,12 +203,19 @@ public class GameManager : MonoBehaviour
         while (completedRewinds < totalRewindableObjects && elapsedTime < timeoutDuration)
         {
             elapsedTime += Time.unscaledDeltaTime;
-            yield return null; // Wait one frame
+            yield return null;
         }
         
         if (elapsedTime >= timeoutDuration)
         {
             Debug.LogWarning($"Rewind timeout reached after {timeoutDuration}s. Only {completedRewinds}/{totalRewindableObjects} objects completed.");
+        }
+
+        // Move the player to the start position
+        while (player.transform.position != playerStartPosition)
+        {
+            elapsedTime += Time.unscaledDeltaTime;
+            yield return null;
         }
         
         IsRewinding = false;
