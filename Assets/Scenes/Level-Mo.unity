@@ -312,7 +312,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxLevels: 3
-  levelTimeLimit: 30
+  levelTimeLimit: 60
   rewindDuration: 15
   OnLevelStart:
     m_PersistentCalls:
@@ -1428,7 +1428,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHistoryFrames: 3600
-  rewindTimeScale: 3
+  rewindTimeScale: 1
 --- !u!1001 &1810936470
 PrefabInstance:
   m_ObjectHideFlags: 0

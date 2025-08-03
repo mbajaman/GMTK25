@@ -34,6 +34,8 @@ public class GameManager : MonoBehaviour
     
     // RewindableObjects management
     private RewindableObject[] rewindableObjects;
+    private int completedRewinds = 0;
+    private int totalRewindableObjects = 0;
     
 
     
@@ -144,7 +146,7 @@ public class GameManager : MonoBehaviour
     private void TimeUp()
     {
         IsGameActive = false;
-        OnTimeUp?.Invoke();
+        OnTimeUp?.Invoke(); // To subscribe and do camera effects
         
         Debug.Log($"Time's up on level {CurrentLevel}! Starting rewind...");
         
@@ -156,23 +158,59 @@ public class GameManager : MonoBehaviour
         rewindCoroutine = StartCoroutine(RewindToStart());
     }
     
-       private IEnumerator RewindToStart()
+    private IEnumerator RewindToStart()
     {
         IsRewinding = true;
         OnRewindStart?.Invoke();
         
         Debug.Log("Starting rewind process...");
         
-        // Wait for the rewind duration (RewindableObjects will handle their own timing)
-        yield return new WaitForSeconds(rewindDuration);
+        // Reset rewind completion tracking
+        completedRewinds = 0;
+        totalRewindableObjects = rewindableObjects.Length;
+        Time.timeScale = 3f;
+        
+        // If there are no RewindableObjects, complete immediately
+        if (totalRewindableObjects == 0)
+        {
+            Debug.Log("No RewindableObjects found in scene. Completing rewind immediately.");
+            IsRewinding = false;
+            OnRewindComplete?.Invoke();
+            StartLevel(CurrentLevel);
+            yield break;
+        }
+        
+        Debug.Log($"Waiting for {totalRewindableObjects} RewindableObjects to complete rewind...");
+        
+        // Wait for all RewindableObjects to complete their rewind with timeout
+        float timeoutDuration = rewindDuration * 3f; // 3x the rewind duration as timeout
+        float elapsedTime = 0f;
+        
+        while (completedRewinds < totalRewindableObjects && elapsedTime < timeoutDuration)
+        {
+            elapsedTime += Time.unscaledDeltaTime;
+            yield return null; // Wait one frame
+        }
+        
+        if (elapsedTime >= timeoutDuration)
+        {
+            Debug.LogWarning($"Rewind timeout reached after {timeoutDuration}s. Only {completedRewinds}/{totalRewindableObjects} objects completed.");
+        }
         
         IsRewinding = false;
         OnRewindComplete?.Invoke();
         
-        Debug.Log("Rewind complete! Restarting level...");
+        Debug.Log("All rewinds complete! Restarting level...");
         
         // Restart the level
         StartLevel(CurrentLevel);
+    }
+    
+    // Called by RewindableObjects when they complete their rewind
+    public void OnRewindableObjectComplete()
+    {
+        completedRewinds++;
+        Debug.Log($"RewindableObject completed rewind. Progress: {completedRewinds}/{totalRewindableObjects}");
     }
     
     

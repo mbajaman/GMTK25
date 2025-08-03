@@ -14,7 +14,8 @@ public class RewindableObject : MonoBehaviour
     private Coroutine rewindCoroutine;
     private float originalTimeScale;
     private BoxCollider boxCollider;
-    private Rigidbody rigidbody;
+    private Rigidbody rigidbody = new Rigidbody();
+    private bool hasNotifiedCompletion = false;
 
     void Start()
     {
@@ -39,8 +40,11 @@ public class RewindableObject : MonoBehaviour
             // Only record history when not rewinding
             if (history.Count >= maxHistoryFrames)
             {
+                Debug.Log($"Removing history at index 0");
                 history.RemoveAt(0);
             }
+
+            Debug.Log($"Adding history at index {history.Count} | Position: {transform.position} | Rotation: {transform.rotation}");
             history.Add(new TimeState(transform.position, transform.rotation));
         }
     }
@@ -50,8 +54,10 @@ public class RewindableObject : MonoBehaviour
         if (isRewinding) return; // Already rewinding
 
         isRewinding = true;
+        hasNotifiedCompletion = false;
         boxCollider.enabled = false;
         rigidbody.useGravity = false;
+        rigidbody.isKinematic = true;
 
         if (rewindCoroutine != null)
         {
@@ -62,6 +68,8 @@ public class RewindableObject : MonoBehaviour
 
     public void StopRewind()
     {
+        Debug.Log($"Stopping rewind...");
+
         isRewinding = false;
         if (rewindCoroutine != null)
         {
@@ -71,6 +79,12 @@ public class RewindableObject : MonoBehaviour
         
         // Restore original time scale
         Time.timeScale = originalTimeScale;
+
+        // Clear history after rewind
+        history.Clear();
+        boxCollider.enabled = true;
+        rigidbody.useGravity = true;
+        rigidbody.isKinematic = false;
     }
 
     private IEnumerator RewindCoroutine()
@@ -80,49 +94,43 @@ public class RewindableObject : MonoBehaviour
         if (history.Count == 0)
         {
             Debug.LogWarning($"RewindableObject {gameObject.name} has no history to rewind");
+            // Notify GameManager that this object has completed (even though it had nothing to rewind)
+            if (gameManager != null && !hasNotifiedCompletion)
+            {
+                hasNotifiedCompletion = true;
+                gameManager.OnRewindableObjectComplete();
+            }
             yield break;
         }
 
         // Store original time scale and speed up rewind
         originalTimeScale = Time.timeScale;
         Time.timeScale = rewindTimeScale;
-
-        // Get rewind duration from GameManager
-        float rewindDuration = gameManager != null ? gameManager.rewindDuration : 10f;
-        
-        // Calculate frames per second for rewind (accounting for time scale)
-        float rewindFPS = 60f * rewindTimeScale;
-        float timePerFrame = 1f / rewindFPS;
         
         // Calculate how many history frames to process
         int totalFrames = history.Count;
-        int framesToProcess = Mathf.Min(totalFrames, Mathf.RoundToInt(rewindDuration * rewindFPS));
-        
+        Debug.Log($"Total Frames: {totalFrames}");
+
         // Process frames in reverse order
-        for (int i = totalFrames - 1; i >= totalFrames - framesToProcess; i--)
+        for (int i = totalFrames - 1; i >= 0; i--)
         {
             Debug.Log($"Processing frame {i}");
-            Debug.Log($"isRewinding: {isRewinding}");
-            
-            if (!isRewinding) break; // Check if rewind was stopped
-            
+                        
             TimeState state = history[i];
             transform.position = state.position;
             transform.rotation = state.rotation;
-            
-            // Wait for one frame at the sped-up time scale
-            yield return new WaitForSeconds(timePerFrame);
+            i -= 6;
+            yield return new WaitForSeconds(0.005f);
+        }
+
+        // Notify GameManager that this object has completed its rewind
+        if (gameManager != null && !hasNotifiedCompletion)
+        {
+            hasNotifiedCompletion = true;
+            gameManager.OnRewindableObjectComplete();
         }
         
-        // Clear history after rewind
-        history.Clear();
-        isRewinding = false;
-        rewindCoroutine = null;
-        boxCollider.enabled = true;
-        rigidbody.useGravity = true;
-
-        // Restore original time scale
-        Time.timeScale = originalTimeScale;
+        Debug.Log($"RewindableObject {gameObject.name} completed rewind");
     }
     
     void OnDestroy()

@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Collections;
 
 public class RewindTest : MonoBehaviour
 {
@@ -92,7 +93,7 @@ public class RewindTest : MonoBehaviour
         }
     }
     
-    private System.Collections.IEnumerator TestRewind()
+    private IEnumerator TestRewind()
     {
         Debug.Log("Starting test rewind...");
         
