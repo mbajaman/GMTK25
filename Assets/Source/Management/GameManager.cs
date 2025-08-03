@@ -140,8 +140,6 @@ public class GameManager : MonoBehaviour
     {
         if (!IsGameActive || IsRewinding)
             return;
-            
-        IsGameActive = false;
         
         Debug.Log($"Level {CurrentLevel} completed!");
 
@@ -154,6 +152,12 @@ public class GameManager : MonoBehaviour
         {
             CompleteGame();
         }
+
+        if (CurrentLevel < maxLevels)
+        {
+            StartLevel(CurrentLevel + 1);
+        }
+
     }
     
     private void TimeUp()
@@ -285,6 +289,6 @@ public class GameManager : MonoBehaviour
     
     public bool IsLevelComplete()
     {
-        return !IsGameActive && !IsRewinding && TimeRemaining > 0;
+        return !IsRewinding && TimeRemaining > 0;
     }
 } 
