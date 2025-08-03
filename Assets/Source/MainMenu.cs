@@ -8,6 +8,11 @@ public class MainMenu : MonoBehaviour
         SceneManager.LoadScene("Clock Blockout");
     }
 
+    public void MainMenuBtn()
+    {
+        SceneManager.LoadScene("AnotherMainMenu");
+    }
+
     public void Quit()
     {
         Debug.Log("Quit");
