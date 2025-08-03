@@ -9419,6 +9419,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 9005220659476430823, guid: 2d3a85ecde41a8246a79669975912b74, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2118522721}
+    - targetCorrespondingSourceObject: {fileID: 9005220659476430823, guid: 2d3a85ecde41a8246a79669975912b74, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2118522729}
   m_SourcePrefab: {fileID: 100100000, guid: 2d3a85ecde41a8246a79669975912b74, type: 3}
 --- !u!1 &1574255157
 GameObject:
@@ -10342,6 +10345,9 @@ MonoBehaviour:
   _minHeightToSlam: 4
   _slamSpeed: -1000
   _defaultBounceHeight: 15
+  _useEffects: 1
+  _slamEffectDuration: 0.25
+  _bounceEffectDuration: 0.4
 --- !u!114 &1767195734
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12759,6 +12765,23 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 9005220659476430818, guid: 2d3a85ecde41a8246a79669975912b74, type: 3}
   m_PrefabInstance: {fileID: 1574086102}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &2118522729
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2118522720}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IsGlobal: 1
+  priority: 0
+  blendDistance: 0
+  weight: 1
+  sharedProfile: {fileID: 11400000, guid: 59f789d7a9aa18e429a9a2eca3d3d25f, type: 2}
 --- !u!43 &2121203050
 Mesh:
   m_ObjectHideFlags: 0
