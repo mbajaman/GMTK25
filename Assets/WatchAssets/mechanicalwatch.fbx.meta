@@ -8,97 +8,132 @@ ModelImporter:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: Material.003
-    second: {fileID: 2100000, guid: 9084d272d55da4f4da8bf24eb35a50ce, type: 2}
+    second: {fileID: 2100000, guid: ba44d56df4b7f064399d69202e5a01ae, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: Material.004
-    second: {fileID: 2100000, guid: 27188197125d8d4469ed3693024c8220, type: 2}
+    second: {fileID: 2100000, guid: 995b3b0bc02fd1f47a1702354eca1b82, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: axle.002
-    second: {fileID: 2100000, guid: 825f7f20419640447ab8e8df00e1ad02, type: 2}
+    second: {fileID: 2100000, guid: 84d6b26e80196fd42933276b68d82bf4, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: balance_wheel.001
-    second: {fileID: 2100000, guid: 29bfcfe099677de4a8269b7f485abb7e, type: 2}
+    second: {fileID: 2100000, guid: cf31de9bec4c8784aa6684e43c5882d0, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: black watch
-    second: {fileID: 2100000, guid: 4ded9e03ef9ffb24ca02a39d14398ed5, type: 2}
+    second: {fileID: 2100000, guid: 9f1acfcbd08a5824c8177d2ff9bcf812, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: escape_wheel.001
-    second: {fileID: 2100000, guid: ad43b87e65d52f14783ce351e5297de5, type: 2}
+    second: {fileID: 2100000, guid: 2e80cff7cea05de48863f0285c6bdd8a, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: escapement.002
-    second: {fileID: 2100000, guid: f19447abca8282e49b7d22659266be22, type: 2}
+    second: {fileID: 2100000, guid: 2f1a55a44476282409eabc7a509a9264, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: fixtures.002
-    second: {fileID: 2100000, guid: 1b83ca7ee6100214eb1775ec1d85bbd3, type: 2}
+    second: {fileID: 2100000, guid: c80a2dc03f7f5e6458461600a9a16337, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: gear metalic
-    second: {fileID: 2100000, guid: 99d4320c06ac4f24abff8f040d025599, type: 2}
+    second: {fileID: 2100000, guid: f7c542b0e1ffcee4a9c026ee20f110b8, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: hairspring.001
-    second: {fileID: 2100000, guid: cdf838d1cf102b74ebf53863de696876, type: 2}
+    second: {fileID: 2100000, guid: 6149e5eb2f4e8d24fb76480a092d492c, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: inside metal.black
-    second: {fileID: 2100000, guid: 04ef3d324c5b1364d8a9afca2f140755, type: 2}
+    second: {fileID: 2100000, guid: 73d012002db6d384d8388bfd62a5905c, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: inside metal.black.001
-    second: {fileID: 2100000, guid: dd4740dad874efd49ac7b46068bce90d, type: 2}
+    second: {fileID: 2100000, guid: badbc6c7f1dfc6e48bfc1f8ad3ee8d32, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: material
-    second: {fileID: 2100000, guid: d7979af6e82910342924ef6c929d750c, type: 2}
+    second: {fileID: 2100000, guid: 1ae570c6e1eb6a843a88d4266504b8c4, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: material.002
-    second: {fileID: 2100000, guid: 00ac821edfa854141b1c8a8ab74d13ac, type: 2}
+    second: {fileID: 2100000, guid: 5dd8e4d6e3f1b184c9c74af5ec4f829d, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: plastc pink
-    second: {fileID: 2100000, guid: 69609dca11499c7428de7f18de40e2a9, type: 2}
+    second: {fileID: 2100000, guid: 36b45b7bcc30f484d8e644227b66284b, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: plastc pink.001
-    second: {fileID: 2100000, guid: bb989212a3df3cb4aa6f47ec77fb2369, type: 2}
+    second: {fileID: 2100000, guid: 636cf09bd014b9b4ba84d56026b6cb06, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: ruby.003
-    second: {fileID: 2100000, guid: 32f08bf72a5a19246b0320fa3791c1c2, type: 2}
+    second: {fileID: 2100000, guid: 9f372628f0b8ca346ad124c6f626a20f, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: scratch
-    second: {fileID: 2100000, guid: 362aefdd0e831384194469775223c33b, type: 2}
+    second: {fileID: 2100000, guid: 7c37ab95878c92a459bd9d5e8c8dc33a, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: tiktok
-    second: {fileID: 2100000, guid: 9466a884e59a39c44a24e7120dbed845, type: 2}
+    second: {fileID: 2100000, guid: f76a14338973f7c428733668acce45d8, type: 2}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: 'gear normal metalic '
+    second: {fileID: 2800000, guid: a83f15de0c6bd7a49beb5f7ff7978bd2, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: gear roughness metal
+    second: {fileID: 2800000, guid: 4cb10b148a76c0f458889ae581b90bee, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: image
+    second: {fileID: 2800000, guid: 3f248531253c5e44da751aca40429d68, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: 'little black circle roughness '
+    second: {fileID: 2800000, guid: a192903383a91e74ea4bfe43b57ab8d2, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: normal scratch black
+    second: {fileID: 2800000, guid: 56606530949985243a45c771fd267d99, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: watch metalic texture
+    second: {fileID: 2800000, guid: 372f31d45b4f415489571a1152edcaa7, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: watch normal texture
+    second: {fileID: 2800000, guid: 9aceef0895e918249973ef8b0f360bce, type: 3}
   materials:
     materialImportMode: 2
     materialName: 0

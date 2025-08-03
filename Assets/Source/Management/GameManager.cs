@@ -155,7 +155,7 @@ public class GameManager : MonoBehaviour
             CompleteGame();
         }
 
-        if (CurrentLevel < maxLevels)
+        if (CurrentLevel <= maxLevels)
         {
             StartLevel(CurrentLevel);
         }
@@ -244,6 +244,7 @@ public class GameManager : MonoBehaviour
     private void CompleteGame()
     {
         IsGameComplete = true;
+        CurrentLevel = 1;
         IsGameActive = false;
         SceneManager.LoadScene("EndMenu");
         Cursor.lockState = CursorLockMode.None;
