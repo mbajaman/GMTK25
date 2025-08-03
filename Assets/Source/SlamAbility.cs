@@ -2,6 +2,8 @@ using StarterAssets;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 
 [RequireComponent(typeof(CharacterController))]
 [RequireComponent(typeof(FirstPersonController))]
@@ -12,7 +14,7 @@ public class SlamAbility : MonoBehaviour
     [SerializeField] private CharacterController _controller;
     [SerializeField] private GameObject _mainCamera;
 
-    [Space][Space]
+    [Space(20)]
     [SerializeField][MinAttribute(0.1f)] private float _minHeightToSlam = 5f;
 
     [Tooltip("It's just gravity when player slams onto a viable platform. Positive numbers will be converted to negative.")]
@@ -20,6 +22,12 @@ public class SlamAbility : MonoBehaviour
 
     [Tooltip("Backup in case slam platform doesn't have its own bounce height value.")]
     [SerializeField][MinAttribute(0.1f)] private float _defaultBounceHeight = 15f;
+
+    [Space(20)]
+    [SerializeField] private bool _useEffects = true;
+    [SerializeField][Range(0, 1)] private float _slamEffectDuration = 0.25f;
+    [SerializeField][Range(0, 1)] private float _bounceEffectDuration = 0.4f;
+
 
     private InputAction _slamAction;
     private LayerMask _layerMask;
@@ -29,6 +37,8 @@ public class SlamAbility : MonoBehaviour
     private float _originalJumpHeight;
     private float _bounceHeight;
     private bool _canSlam = false;
+    private ChromaticAberration _chromaticAberration;
+    private LensDistortion _lensDistortion;
 
     private const float SLAM_COROUTINE_BUFFER = 0.5f; // Please don't fly off into space thanks.
     private const string ACTION_MAP_NAME = "Player";
@@ -79,14 +89,39 @@ public class SlamAbility : MonoBehaviour
             Debug.LogWarning("SlamAbility Warning: Slam Speed (" + _slamSpeed + ") is greater than or equal to player's original gravity " +
                 "value (" + _originalGravity + "). IE: Speed at which the player slams the platform will be SLOWER or the same as falling.");
         }
+
+        Volume Volume;
+        if (!_mainCamera.TryGetComponent<Volume>(out Volume))
+        {
+            throw new System.NullReferenceException("Main Camera does not have Volume component. " +
+                "Please also make sure Volume has Chromatic Aberration and Lens Distortion.");
+        }
+
+        if (!_mainCamera.GetComponent<Volume>().profile.TryGet(out _chromaticAberration))
+        {
+            throw new System.NullReferenceException("Main Camera's Volume component does not have Chromatic Aberration.");
+        }
+
+        if (!_mainCamera.GetComponent<Volume>().profile.TryGet(out _lensDistortion))
+        {
+            throw new System.NullReferenceException("Main Camera's Volume component does not have Lens Distortion.");
+        }
+
+        _chromaticAberration.active = true;
+        _lensDistortion.active = true;
     }
 
     private void Update()
     {
-        
         if (_slamAction.WasPressedThisFrame() && _canSlam)
         {
             StartCoroutine(SlamCoroutine());
+
+            if (_useEffects)
+            {
+                StartCoroutine(SlamEffectsCoroutine());
+            }
+            
         }
     }
 
@@ -125,5 +160,51 @@ public class SlamAbility : MonoBehaviour
 
         yield return new WaitForSeconds(SLAM_COROUTINE_BUFFER);
         _firstPersonController.JumpHeight = _originalJumpHeight;
+    }
+
+    private IEnumerator SlamEffectsCoroutine()
+    {
+        float TimeElapsed = 0;
+        float LerpValue;
+
+        while (TimeElapsed < _slamEffectDuration && !_firstPersonController.Grounded)
+        {
+            LerpValue = Mathf.Lerp(0, 1, TimeElapsed / _slamEffectDuration);
+            TimeElapsed += Time.deltaTime;
+
+            _chromaticAberration.intensity.value = LerpValue;
+            _lensDistortion.intensity.value = LerpValue * -1;
+            _lensDistortion.scale.value = 1 - LerpValue / 2;
+
+            yield return null;
+        }
+
+
+        while (!_firstPersonController.Grounded)
+        {
+            _chromaticAberration.intensity.value = 1;
+            _lensDistortion.intensity.value = -1;
+            _lensDistortion.scale.value = 0.5f;
+
+            yield return null;
+        }
+
+        TimeElapsed = 0;
+
+        while (TimeElapsed < _bounceEffectDuration)
+        {
+            LerpValue = Mathf.Lerp(1, 0, TimeElapsed / _bounceEffectDuration);
+            TimeElapsed += Time.deltaTime;
+
+            _chromaticAberration.intensity.value = LerpValue;
+            _lensDistortion.intensity.value = LerpValue * -1;
+            _lensDistortion.scale.value = 1 - LerpValue / 2;
+
+            yield return null;
+        }
+
+        _chromaticAberration.intensity.value = 0;
+        _lensDistortion.intensity.value = 0;
+        _lensDistortion.scale.value = 1;
     }
 }
