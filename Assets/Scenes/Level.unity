@@ -1393,7 +1393,7 @@ PrefabInstance:
       objectReference: {fileID: 999925294}
     - target: {fileID: 8616685848737228371, guid: c5efc39a8aaf6e64ea40e9ad573e9b47, type: 3}
       propertyPath: JumpHeight
-      value: 1.2
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 8616685848737228372, guid: c5efc39a8aaf6e64ea40e9ad573e9b47, type: 3}
       propertyPath: m_Name
@@ -1718,7 +1718,7 @@ MonoBehaviour:
   priority: 0
   blendDistance: 0
   weight: 1
-  sharedProfile: {fileID: 11400000, guid: 59f789d7a9aa18e429a9a2eca3d3d25f, type: 2}
+  sharedProfile: {fileID: 11400000, guid: 4c446e589d8f33944bf93ec21cd3eafd, type: 2}
 --- !u!114 &999925296
 MonoBehaviour:
   m_ObjectHideFlags: 0
