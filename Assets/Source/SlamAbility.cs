@@ -1,5 +1,6 @@
 using StarterAssets;
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
@@ -135,12 +136,21 @@ public class SlamAbility : MonoBehaviour
             !_firstPersonController.Grounded)
         {
             Debug.DrawRay(_mainCamera.transform.position, _mainCamera.transform.forward * 10000f, Color.yellow);
-            _canSlam= true;
+            _canSlam = true;
             
             hitComponent = hit.transform.GetComponent<SlamPlatform>();
+            MeshRenderer mesh = hit.transform.GetComponent<MeshRenderer>();
+            mesh.material.color = Color.green;
+            
             _bounceHeight = hitComponent != null ? hitComponent.BounceHeight : _defaultBounceHeight;
-        } else
+        } 
+        else
         {
+            if (hit.collider)
+            {
+                hit.transform.GetComponent<MeshRenderer>().material.color = Color.white;
+            }
+            
             _canSlam = false;
         }
     }
